@@ -1,0 +1,8 @@
+.regPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45.31deg, rgba(25.054851531982422, 241.2692108154297, 129.55838012695312, 1),rgba(143.81394958496094, 58.30296325683594, 180.46151733398438, 1) 100%);
+}
