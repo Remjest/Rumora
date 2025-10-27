@@ -8,7 +8,7 @@ import FormWrapper from '../FormWrapper/FormWrapper';
 export interface RegFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> { }
 
 type RegData = {
-    name: string
+    username: string
     email: string
     password: string
     confPassword: string
@@ -23,21 +23,46 @@ export default function RegForm({ ...props }: RegFormProps) {
         formState: { errors },
     } = useForm<RegData>();
 
-    const onSubmit: SubmitHandler<RegData> = (data) => console.log(data);
+    const onSubmit: SubmitHandler<RegData> = async (data, e) => {
+        e?.preventDefault();
+        try {
+            const res = await fetch('http://localhost:8080/api/users/create', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: data.username,
+                    email: data.email,
+                    password: data.password
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!res.ok) { 
+                const errorText = await res.text();
+                throw new Error(`Request failed: ${res.status} - ${errorText}`);
+            }
+
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+        
+    };
     
     const password = watch("password");
 
-    console.log(watch("name"))
+    console.log(watch("username"))
 
     return (
-        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        <form method='post' action='' className={styles.form} onSubmit={handleSubmit(onSubmit)}>
             
             <Input type='text'
                 placeholder='Введите имя пользователя'
                 label='Имя пользователя'
-                {...register("name", { required:'Заполните поле' })}
+                {...register("username", { required:'Заполните поле' })}
             />
-            {errors.name && <span className={styles.err}> {errors.name.message} </span>}
+            {errors.username && <span className={styles.err}> {errors.username.message} </span>}
 
             <Input type='email'
                 placeholder='Введите email'
