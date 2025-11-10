@@ -1,6 +1,7 @@
 import styles from './LoginForm.module.css';
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router";
 import Input from '@/components/shared/Input/Input';
 import Button from '@/components/shared/Button/Button';
 import FormWrapper from '../FormWrapper/FormWrapper';
@@ -8,22 +9,53 @@ import FormWrapper from '../FormWrapper/FormWrapper';
 export interface LoginFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> { }
 
 type Login = {
-    name: string
+    username: string
     password: string
 }
 
 export default function LoginForm({ ...props }: LoginFormProps) {
 
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<Login>();
 
-    const onSubmit: SubmitHandler<Login> = (data) => console.log(data)
+    const onSubmit: SubmitHandler<Login> = async (data, e) => {
+        e?.preventDefault();
+        try {
+            const loginRes = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: data.username,
+                    password: data.password
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-    console.log(watch("name"))
+            if (!loginRes.ok) { 
+                const errorText = await loginRes.text();
+                throw new Error(`Ошибка входа: ${loginRes.status} - ${errorText}`);
+            }
+            
+            const userData = await loginRes.json();
+            console.log('loginData:', userData);
+            localStorage.setItem('userToken', userData.token);
+            localStorage.setItem('userRole', userData.role);
+            localStorage.setItem('userName', userData.name);
+
+            navigate("/");
+
+        } catch (error) {
+            console.log(error)
+        }
+        
+    };
+
 
     return (
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
@@ -31,15 +63,18 @@ export default function LoginForm({ ...props }: LoginFormProps) {
                 <Input type='text'
                     placeholder='Введите имя пользователя'
                     label='Имя пользователя'
-                    {...register("name", { required: true })}
+                    {...register("username", { required: true })}
                 />
-                {errors.name && <span className={styles.err}> Заполните поле </span>}
+                {errors.username && <span className={styles.err}> Заполните поле </span>}
                 
                 <Input type='password'
                     haveButton
                     placeholder='Введите пароль'
                     label='Пароль'
-                    {...register("password", { required: true })}
+                    {...register("password", {
+                        required: true,
+                        minLength: { value: 8, message: 'Длина пароля не менее 8 символов' }
+                    })}
                 />
                 {errors.password && <span className={styles.err}> Заполните поле </span>}
                 

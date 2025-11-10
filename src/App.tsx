@@ -4,12 +4,13 @@ import LoginPage from "./components/pages/LoginPage/LoginPage";
 import { Route, Routes } from "react-router";
 import LoginForm from "./components/blocks/LoginForm/LoginForm";
 import RegForm from "./components/blocks/RegForm/RegForm";
+import HomePage from "./components/pages/HomePage/HomePage";
 
 
 export default function App(): JSX.Element {
     return <>
         <Routes>
-            <Route index element={<Main />} />
+            <Route index element={<HomePage />} />
 
             <Route element={<LoginPage />}>
                 <Route path="login" element={<LoginForm/>} />

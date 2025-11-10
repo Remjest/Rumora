@@ -1,6 +1,7 @@
 import styles from './RegForm.module.css';
 import { DetailedHTMLProps, HTMLAttributes} from 'react';
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router";
 import Input from '@/components/shared/Input/Input';
 import Button from '@/components/shared/Button/Button';
 
@@ -14,6 +15,8 @@ type RegData = {
 
 export default function RegForm({ ...props }: RegFormProps) {
 
+    let navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -24,7 +27,7 @@ export default function RegForm({ ...props }: RegFormProps) {
     const onSubmit: SubmitHandler<RegData> = async (data, e) => {
         e?.preventDefault();
         try {
-            const res = await fetch('http://localhost:8080/api/users/create', {
+            const regRes = await fetch('http://localhost:8080/api/auth/register', {
                 method: 'POST',
                 body: JSON.stringify({
                     username: data.username,
@@ -35,12 +38,38 @@ export default function RegForm({ ...props }: RegFormProps) {
                 }
             });
 
-            if (!res.ok) { 
-                const errorText = await res.text();
-                throw new Error(`Request failed: ${res.status} - ${errorText}`);
+            if (!regRes.ok) { 
+                const errorText = await regRes.text();
+                throw new Error(`Ошибка регистрации: ${regRes.status} - ${errorText}`);
             }
 
-            console.log(res)
+            navigate("/");
+
+            console.log('regData:', regRes);
+
+            const loginRes = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: data.username,
+                    password: data.password
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!loginRes.ok) { 
+                const errorText = await loginRes.text();
+                throw new Error(`Ошибка входа: ${loginRes.status} - ${errorText}`);
+            }
+            
+            const userData = await loginRes.json();
+            console.log('loginData:', userData);
+            localStorage.setItem('userToken', userData.token);
+            localStorage.setItem('userRole', userData.role);
+            localStorage.setItem('userName', userData.name);
+            navigate("/");
+
         } catch (error) {
             console.log(error)
         }
