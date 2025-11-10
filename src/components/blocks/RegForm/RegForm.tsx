@@ -1,15 +1,13 @@
 import styles from './RegForm.module.css';
-import { DetailedHTMLProps, HTMLAttributes, useState } from 'react';
+import { DetailedHTMLProps, HTMLAttributes} from 'react';
 import { useForm, SubmitHandler } from "react-hook-form"
 import Input from '@/components/shared/Input/Input';
 import Button from '@/components/shared/Button/Button';
-import FormWrapper from '../FormWrapper/FormWrapper';
 
 export interface RegFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> { }
 
 type RegData = {
     username: string
-    email: string
     password: string
     confPassword: string
 }
@@ -30,7 +28,6 @@ export default function RegForm({ ...props }: RegFormProps) {
                 method: 'POST',
                 body: JSON.stringify({
                     username: data.username,
-                    email: data.email,
                     password: data.password
                 }),
                 headers: {
@@ -63,13 +60,6 @@ export default function RegForm({ ...props }: RegFormProps) {
                 {...register("username", { required:'Заполните поле' })}
             />
             {errors.username && <span className={styles.err}> {errors.username.message} </span>}
-
-            <Input type='email'
-                placeholder='Введите email'
-                label='Почта'
-                {...register("email", { required: 'Заполните поле' })}
-            />
-            {errors.email && <span className={styles.err}> {errors.email.message} </span>}
             
             <Input type='password'
                 haveButton
