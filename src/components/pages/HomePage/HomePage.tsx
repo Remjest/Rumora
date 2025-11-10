@@ -20,7 +20,7 @@ export default function HomePage({ ...props }: HomePageProps) {
     return (
         <main className={styles.homePage} {...props}>
 
-            <h1 className={styles.h1}>{isLoggedIn ? 'Страница незалогиненного пользователя' : 'Страница залогиненного пользователя' }</h1>
+            <h1 className={styles.h1}>{isLoggedIn ? 'Страница залогиненного пользователя' : 'Страница незалогиненного пользователя' }</h1>
 
         </main>
     );

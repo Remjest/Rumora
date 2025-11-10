@@ -43,8 +43,6 @@ export default function RegForm({ ...props }: RegFormProps) {
                 throw new Error(`Ошибка регистрации: ${regRes.status} - ${errorText}`);
             }
 
-            navigate("/");
-
             console.log('regData:', regRes);
 
             const loginRes = await fetch('http://localhost:8080/api/auth/login', {
@@ -67,7 +65,7 @@ export default function RegForm({ ...props }: RegFormProps) {
             console.log('loginData:', userData);
             localStorage.setItem('userToken', userData.token);
             localStorage.setItem('userRole', userData.role);
-            localStorage.setItem('userName', userData.name);
+            localStorage.setItem('userName', userData.username);
             navigate("/");
 
         } catch (error) {
@@ -77,8 +75,6 @@ export default function RegForm({ ...props }: RegFormProps) {
     };
     
     const password = watch("password");
-
-    console.log(watch("username"))
 
     return (
         <form method='post' action='' className={styles.form} onSubmit={handleSubmit(onSubmit)}>
