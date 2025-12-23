@@ -19,7 +19,10 @@ export default function HomePage({ ...props }: HomePageProps) {
     useEffect(() => {
 
         const token = localStorage.getItem('userToken');
-        if (!token) return;
+        if (!token) {
+            navigate('/login');
+            return;
+        }
         
         async function loadSongs() {
             try {

@@ -20,7 +20,6 @@ export default function UserPage({ ...props }: UserPageProps) {
         const token = localStorage.getItem('userToken') ?? undefined;
         const username = localStorage.getItem('userName') ?? undefined;
         const role = localStorage.getItem('userRole') as 'Admin' | 'User' | 'Moder' | undefined ?? undefined;
-        if (!token) navigate('/');
         setUserData( { username, role, token})
         setIsLoggedIn(!!token);
     }, []);
