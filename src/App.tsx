@@ -1,5 +1,4 @@
 import { JSX } from "react";
-import Main from "./components/sections/Main/Main";
 import LoginPage from "./components/pages/LoginPage/LoginPage";
 import { Route, Routes } from "react-router";
 import LoginForm from "./components/blocks/LoginForm/LoginForm";

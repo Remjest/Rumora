@@ -61,7 +61,6 @@ export default function HomePage({ ...props }: HomePageProps) {
         <main className={styles.homePage} {...props}>
             <NavButton className={styles.nav} purpose='user' onClick={() => {isLoggedIn ? navigate("/user") :  navigate("/login")}}/>
 
-            {/* <h1 className={styles.h1}>{isLoggedIn ? 'Страница залогиненного пользователя' : 'Страница незалогиненного пользователя'}</h1> */}
             <div className={styles.wrapper}>
                 <input className={styles.search} type="text" placeholder='Поиск' onChange={(e) => {searchMusic(e.target.value)}}/>
                 <div className={styles.musicContainer}>

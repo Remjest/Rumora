@@ -4,7 +4,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
 import Input from '@/components/shared/Input/Input';
 import Button from '@/components/shared/Button/Button';
-import FormWrapper from '../FormWrapper/FormWrapper';
 import { IUserData } from '@/interfaces';
 
 export interface LoginFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> { }

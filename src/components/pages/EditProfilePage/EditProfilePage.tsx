@@ -1,4 +1,3 @@
-// EditProfilePage.tsx
 import styles from './EditProfilePage.module.css';
 import { DetailedHTMLProps, HTMLAttributes, useEffect } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";

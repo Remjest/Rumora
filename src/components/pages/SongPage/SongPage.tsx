@@ -1,16 +1,11 @@
 import styles from './SongPage.module.css';
 import ImgTag from '@/components/shared/ImgTag/ImgTag';
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useState } from 'react';
-import Logo from './logo.svg';
-
-import { useLocation, Outlet, Link, useNavigate, useParams } from 'react-router';
-import Button from '@/components/shared/Button/Button';
+import { useNavigate, useParams } from 'react-router';
 import NavButton from '@/components/shared/NavButton/NavButton';
-import Song from '@/components/shared/Song/Song';
 import { Comment, IUserData, SongData } from '@/interfaces';
 import classNames from 'classnames';
 import { Player } from '@/components/shared/Player/Player';
-import React from 'react';
 
 export interface UserPageProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {}
 

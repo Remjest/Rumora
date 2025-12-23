@@ -1,15 +1,14 @@
 import styles from './SongAddPage.module.css';
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import NavButton from '@/components/shared/NavButton/NavButton';
 import Button from '@/components/shared/Button/Button';
 
-import { IUserData, SongData } from '@/interfaces';
+import { IUserData } from '@/interfaces';
 
 export default function SongAddPage() {
     const navigate = useNavigate();
     const [userData, setUserData] = useState<IUserData | undefined>(undefined);
-    const [songData, setSongData] = useState<SongData | undefined>(undefined);
     const [title, setTitle] = useState('');
     const [artist, setArtist] = useState('');
     const [year, setYear] = useState('');
@@ -18,7 +17,6 @@ export default function SongAddPage() {
     const coverInputRef = useRef<HTMLInputElement | null>(null);
     const audioInputRef = useRef<HTMLInputElement | null>(null);
 
-    // Для загрузки файлов
     const [coverFile, setCoverFile] = useState<File | null>(null);
     const [audioFile, setAudioFile] = useState<File | null>(null);
 
@@ -30,85 +28,12 @@ export default function SongAddPage() {
         if (role !== "Admin") navigate('/');
     }, []);
 
-    // const handleSave = async () => {
-    //     if (!userData?.token) return;
-
-    //     try {
-    //     //   let coverUrl = songData?.songCover; // если не меняли — оставляем старую
-    //     //   let audioUrl = songData?.audioFile; // если не меняли — оставляем старую
-
-    //     // Загружаем новую обложку, если выбрана
-
-    //         const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Authorization': `Bearer ${userData.token}`,
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({
-    //                 songName: title,
-    //                 authorName: artist,
-    //                 textSong: lyrics,
-    //                 yearOfCreation: year,
-    //             })
-    //         });
-                
-    //         if (res.ok) {
-    //             alert('Трек успешно добавлён!');
-    //         } else {
-    //             throw new Error(`Ошибка добавления трека!`);
-    //         }
-
-    //         console.log(res);
-            
-    //         const songData = await res.json();
-
-    //         console.log(songData);
-
-    //         const { songId } = songData;
-            
-            
-    //         if (coverFile) {
-    //             const formData = new FormData();
-    //             formData.append('songCover', coverFile);
-    //             const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/songs/${songId}/cover`, {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Authorization': `Bearer ${userData.token}`
-    //                 },
-    //                 body: formData
-    //             });
-    //             if (!res.ok) throw new Error('Ошибка загрузки обложки:')
-    //         }
-
-    //         // Загружаем новую аудиозапись, если выбрана
-    //         if (audioFile) {
-    //             const formData = new FormData();
-    //             formData.append('audioFile', audioFile);
-    //             const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/songs/${songId}/audio`, {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Authorization': `Bearer ${userData.token}`
-    //                 },
-    //                 body: formData
-    //             });
-    //             if (!res.ok) throw new Error('Ошибка загрузки аудиофайла:')
-    //         }
-
-        
-    //     } catch (err) {
-    //         console.error('Ошибка сохранения:', err);
-    //         alert('Произошла ошибка');
-    //     }
-    // };
-
     const handleSave = async () => {
     if (!userData?.token) return;
 
     try {
         const formData = new FormData();
 
-        // Текстовые поля
         formData.append('songName', title);
         formData.append('authorName', artist);
         formData.append('yearOfCreation', year.toString());
@@ -117,7 +42,6 @@ export default function SongAddPage() {
             formData.append('textSong', lyrics);
         }
 
-        // Файлы (если выбраны)
         if (coverFile) {
             formData.append('songCover', coverFile);
         }
@@ -132,7 +56,6 @@ export default function SongAddPage() {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${userData.token}`
-                    // ❗ Content-Type НЕ УКАЗЫВАЕМ
                 },
                 body: formData
             }
@@ -142,9 +65,6 @@ export default function SongAddPage() {
             throw new Error('Ошибка добавления трека');
         }
 
-        const songData = await res.json();
-
-        console.log('Трек создан:', songData);
         alert('Трек успешно добавлён!');
 
     } catch (err) {
@@ -211,7 +131,7 @@ export default function SongAddPage() {
 
                 <div className={styles.fileInputWrapper}>
                     <span className={styles.fileName}>
-                        {coverFile?.name || songData?.songCover || 'Файл не выбран'}
+                        {coverFile?.name || 'Файл не выбран'}
                     </span>
 
                     <input
@@ -227,7 +147,7 @@ export default function SongAddPage() {
                         className={styles.uploadButton}
                         onClick={() => coverInputRef.current?.click()}
                     >
-                        {coverFile || songData?.songCover
+                        {coverFile
                             ? 'Загрузить заново'
                             : 'Загрузить файл'}
                     </button>
@@ -239,7 +159,7 @@ export default function SongAddPage() {
 
                     <div className={styles.fileInputWrapper}>
                         <span className={styles.fileName}>
-                            {audioFile?.name || songData?.audioFile || 'Файл не выбран'}
+                            {audioFile?.name || 'Файл не выбран'}
                         </span>
 
                         <input
@@ -255,7 +175,7 @@ export default function SongAddPage() {
                             className={styles.uploadButton}
                             onClick={() => audioInputRef.current?.click()}
                         >
-                            {audioFile || songData?.audioFile
+                            {audioFile
                                 ? 'Загрузить заново'
                                 : 'Загрузить файл'}
                         </button>

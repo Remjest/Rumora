@@ -1,13 +1,10 @@
 import styles from './UserPage.module.css';
-import ImgTag from '@/components/shared/ImgTag/ImgTag';
 import { DetailedHTMLProps, HTMLAttributes, useEffect, useState } from 'react';
-import Logo from './logo.svg';
-
-import { useLocation, Outlet, Link, useNavigate } from 'react-router';
 import Button from '@/components/shared/Button/Button';
 import NavButton from '@/components/shared/NavButton/NavButton';
 import Song from '@/components/shared/Song/Song';
 import { IUserData, SongData } from '@/interfaces';
+import { useNavigate } from 'react-router';
 
 export interface UserPageProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {}
 
@@ -18,8 +15,6 @@ export default function UserPage({ ...props }: UserPageProps) {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [userData, setUserData] = useState<IUserData | undefined>(undefined);
     const [favorites, setFavorites] = useState<SongData[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('userToken') ?? undefined;
@@ -33,8 +28,6 @@ export default function UserPage({ ...props }: UserPageProps) {
         useEffect(() => {
         if (!userData?.token) return;
 
-        setLoading(true);
-        setError(null);
 
         fetch(`${process.env.REACT_APP_SERVER}/api/favorites`, {
         headers: {
@@ -51,12 +44,9 @@ export default function UserPage({ ...props }: UserPageProps) {
         })
         .then((data: SongData[]) => {
             setFavorites(data);
-            setLoading(false);
         })
         .catch((err) => {
             console.error('Ошибка загрузки избранного:', err);
-            setError('Не удалось загрузить избранное');
-            setLoading(false);
         });
     }, [userData?.token]);
 
@@ -76,7 +66,6 @@ export default function UserPage({ ...props }: UserPageProps) {
         <main className={styles.userPage} {...props}>
             <NavButton className={styles.nav} purpose='back' onClick={() => navigate("/")} />
             <div className={styles.action}>
-                {/* {(userData && userData.role === 'Admin') && <Button background='ghost' onClick={() => {}}>Список пользователей</Button>} */}
                 {(userData && (userData.role === 'Admin' || userData.role === 'Moder')) && <Button background='ghost' onClick={() => navigate('/songs/add')}>Добавить трек</Button>}
                 <Button background='ghost' onClick={exitHandler}>Выход</Button>
             </div>
@@ -99,7 +88,6 @@ export default function UserPage({ ...props }: UserPageProps) {
                                     group={song.authorName}
                                     image={song.songCover}
                                     src={`songs/${song.songId}`}
-                                // если компонент Song требует cover — передай song.songCover
                             />
                             ))
                         ) : (

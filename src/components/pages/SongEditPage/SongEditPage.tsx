@@ -1,5 +1,3 @@
-// SongEditPage.tsx
-
 import styles from './SongEditPage.module.css';
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -21,7 +19,6 @@ export default function SongEditPage() {
     const coverInputRef = useRef<HTMLInputElement | null>(null);
     const audioInputRef = useRef<HTMLInputElement | null>(null);
 
-    // Для загрузки файлов
     const [coverFile, setCoverFile] = useState<File | null>(null);
     const [audioFile, setAudioFile] = useState<File | null>(null);
 
@@ -56,58 +53,53 @@ export default function SongEditPage() {
         if (!songId || !userData?.token) return;
 
         try {
-        //   let coverUrl = songData?.songCover; // если не меняли — оставляем старую
-        //   let audioUrl = songData?.audioFile; // если не меняли — оставляем старую
 
-        // Загружаем новую обложку, если выбрана
-        if (coverFile) {
-            const formData = new FormData();
-            formData.append('songCover', coverFile);
-            const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/${songId}/cover`, {
-                method: 'POST',
+            if (coverFile) {
+                const formData = new FormData();
+                formData.append('songCover', coverFile);
+                const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/${songId}/cover`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userData.token}`
+                    },
+                    body: formData
+                });
+                if (!res.ok) throw new Error('Ошибка загрузки обложки:')
+            }
+
+            if (audioFile) {
+                const formData = new FormData();
+                formData.append('audioFile', audioFile);
+                const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/${songId}/audio`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userData.token}`
+                    },
+                    body: formData
+                });
+                if (!res.ok) throw new Error('Ошибка загрузки аудиофайла:')
+            }
+
+            const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/${songId}`, {
+                method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${userData.token}`
+                'Authorization': `Bearer ${userData.token}`,
+                'Content-Type': 'application/json'
                 },
-                body: formData
+                body: JSON.stringify({
+                    songName: title,
+                    authorName: artist,
+                    textSong: lyrics,
+                    yearOfCreation: year
+                })
             });
-            if (!res.ok) throw new Error('Ошибка загрузки обложки:')
-        }
 
-        // Загружаем новую аудиозапись, если выбрана
-        if (audioFile) {
-            const formData = new FormData();
-            formData.append('audioFile', audioFile);
-            const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/${songId}/audio`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${userData.token}`
-                },
-                body: formData
-            });
-            if (!res.ok) throw new Error('Ошибка загрузки аудиофайла:')
-        }
-
-        // Обновляем трек
-        const res = await fetch(`${process.env.REACT_APP_SERVER}/api/admin/songs/${songId}`, {
-            method: 'PUT',
-            headers: {
-            'Authorization': `Bearer ${userData.token}`,
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                songName: title,
-                authorName: artist,
-                textSong: lyrics,
-                yearOfCreation: year
-            })
-        });
-
-        if (res.ok) {
-            alert('Трек успешно обновлён!');
-            navigate(`/songs/${songId}`);
-        } else {
-            alert('Ошибка при сохранении');
-        }
+            if (res.ok) {
+                alert('Трек успешно обновлён!');
+                navigate(`/songs/${songId}`);
+            } else {
+                alert('Ошибка при сохранении');
+            }
         } catch (err) {
         console.error('Ошибка сохранения:', err);
         alert('Произошла ошибка');
