@@ -3,11 +3,14 @@
 html,
 body {
 	--font-dark: #2D2748;
+    --font-primary: rgba(93, 49, 112, 1);
 	--white: #FFF;
 	--gray-light: #F5F5F5;
 	--gray-darken: #A5A2A2;
 	--purple-primary: #903AB4;
+    --ghost: rgba(141, 228, 183, 0.6);
     --red: rgb(230, 0, 0);
+    --green: rgba(25, 241, 130, 1);
 	--main-font: "Inter", sans-serif;
 	background-color: var(--white);
 
@@ -18,6 +21,7 @@ body {
 		padding: 0;
 
 		border: 0;
+        /* color: var(--white); */
 	}
 
 	*,

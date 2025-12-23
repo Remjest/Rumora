@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import Input from '@/components/shared/Input/Input';
 import Button from '@/components/shared/Button/Button';
 import FormWrapper from '../FormWrapper/FormWrapper';
+import { IUserData } from '@/interfaces';
 
 export interface LoginFormProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> { }
 
@@ -26,7 +27,7 @@ export default function LoginForm({ ...props }: LoginFormProps) {
     const onSubmit: SubmitHandler<Login> = async (data, e) => {
         e?.preventDefault();
         try {
-            const loginRes = await fetch('http://localhost:8080/api/auth/login', {
+            const loginRes = await fetch(`${process.env.REACT_APP_SERVER}/api/auth/login`, {
                 method: 'POST',
                 body: JSON.stringify({
                     username: data.username,
@@ -42,11 +43,19 @@ export default function LoginForm({ ...props }: LoginFormProps) {
                 throw new Error(`Ошибка входа: ${loginRes.status} - ${errorText}`);
             }
             
-            const userData = await loginRes.json();
+            const userData: IUserData = await loginRes.json();
             console.log('loginData:', userData);
-            localStorage.setItem('userToken', userData.token);
-            localStorage.setItem('userRole', userData.role);
-            localStorage.setItem('userName', userData.name);
+            if (userData && userData.token && userData.role && userData.username) {
+                localStorage.setItem('userToken', userData.token);
+                localStorage.setItem('userRole', userData.role);
+                localStorage.setItem('userName', userData.username);
+                console.log(
+                    localStorage.getItem('userToken'),
+                    localStorage.getItem('userName'),
+                    localStorage.getItem('userRole')
+                )
+            }
+            
 
             navigate("/");
 

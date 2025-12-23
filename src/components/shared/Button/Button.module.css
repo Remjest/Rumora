@@ -15,6 +15,22 @@
     background-position: 0%;
 }
 
+.ghost{
+    width: fit-content;
+    align-self: flex-end;
+    padding: 5px 30px;
+    border-radius: 20px !important;
+    background: var(--ghost);
+    color: var(--white);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 29px;
+}
+
+.ghost:hover{
+    transform: scale(1.05);
+}
+
 .grad:hover{
     background-position: 100%;
 }
