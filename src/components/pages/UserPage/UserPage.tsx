@@ -24,9 +24,8 @@ export default function UserPage({ ...props }: UserPageProps) {
         setIsLoggedIn(!!token);
     }, []);
 
-        useEffect(() => {
+    useEffect(() => {
         if (!userData?.token) return;
-
 
         fetch(`${process.env.REACT_APP_SERVER}/api/favorites`, {
         headers: {

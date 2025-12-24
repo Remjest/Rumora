@@ -37,7 +37,7 @@ export default function SongPage({ ...props }: UserPageProps) {
 
             if (response.ok) {
                 alert('Трек успешно удалён!');
-                navigate(-1);
+                navigate('/');
             } else {
                 alert('Ошибка при удалении трека');
             }
